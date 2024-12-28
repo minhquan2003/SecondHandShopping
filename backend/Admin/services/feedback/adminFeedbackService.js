@@ -1,4 +1,4 @@
-// import Feedbacks from "../../../models/Feedbacks.js";
+// import Feedbacks from "../../../User/models/Feedbacks.js"; 
 
 // const getAllFeedbacks = async (page, limit) => {
 //   try {
@@ -22,8 +22,8 @@
 
 // export { getAllFeedbacks };
 
-import Feedbacks from "../../../models/Feedbacks.js";
-import Users from "../../../models/Users.js"; // Make sure to import the Users model
+import Feedbacks from "../../../User/models/Feedbacks.js";
+import Users from "../../../User/models/Users.js"; // Make sure to import the Users model
 
 const getAllFeedbacks = async () => {
   try {

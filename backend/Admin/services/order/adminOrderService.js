@@ -1,6 +1,6 @@
-import OrderDetails from "../../../models/OrderDetails.js";
-import Products from "../../../models/Products.js";
-import Orders from "../../../models/Orders.js";
+import OrderDetails from "../../../User/models/OrderDetails.js";
+import Products from "../../../User/models/Products.js";
+import Orders from "../../../User/models/Orders.js";
 
 // Function to format the total amount in readable units (e.g., trillion, million, etc.)
 const formatAmount = (amount) => {

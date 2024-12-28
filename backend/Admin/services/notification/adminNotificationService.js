@@ -1,5 +1,5 @@
-import Notifications from "../../../models/Notifications.js";
-import Users from "../../../models/Users.js";
+import Notifications from "../../../User/models/Notifications.js";
+import Users from "../../../User/models/Users.js";
 
 export const getAllNotifications = async () => {
   try {

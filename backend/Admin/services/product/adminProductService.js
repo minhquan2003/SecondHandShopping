@@ -1,6 +1,6 @@
-import Products from "../../../models/Products.js";
-import Categories from "../../../models/Categories.js";
-import Users from "../../../models/Users.js";
+import Products from "../../../User/models/Products.js";
+import Categories from "../../../User/models/Categories.js";
+import Users from "../../../User/models/Users.js";
 
 // Chuyển trạng thái status thành true
 const updateProductApproveToTrue = async (productId) => {

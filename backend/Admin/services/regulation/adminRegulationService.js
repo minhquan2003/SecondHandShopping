@@ -1,4 +1,4 @@
-import Regulations from "../../../models/Regulations.js";
+import Regulations from "../../../User/models/Regulations.js";
 
 // Lấy tất cả quy định với phân trang, chỉ lấy quy định có status là true
 const getAllRegulations = async () => {

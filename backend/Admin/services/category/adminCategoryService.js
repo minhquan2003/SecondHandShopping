@@ -1,5 +1,5 @@
-import Categories from "../../../models/Categories.js";
-import Products from "../../../models/Products.js";
+import Categories from "../../../User/models/Categories.js";
+import Products from "../../../User/models/Products.js";
 
 // Lấy tất cả categories có phân trang và tổng số
 export const getAllCategories = async () => {

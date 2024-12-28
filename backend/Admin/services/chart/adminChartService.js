@@ -1,6 +1,6 @@
-import Users from "../../../models/Users.js";
-import Products from "../../../models/Products.js";
-import Orders from "../../../models/Orders.js";
+import Users from "../../../User/models/Users.js";
+import Products from "../../../User/models/Products.js";
+import Orders from "../../../User/models/Orders.js";
 
 // export const getUserStatisticsByYear = async (year) => {
 //   try {

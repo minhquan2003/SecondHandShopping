@@ -1,22 +1,22 @@
 import express from "express";
 import { PORT, mongodbconn } from "./config.js";
-import userRoute from "./routes/userRoute.js";
-import authRoute from "./routes/authRoute.js";
-import productRoute from "./routes/productRoute.js";
-import categoryRoute from "./routes/categoryRoute.js";
-import feedbackRoute from "./routes/feedbackRoute.js";
-import notificationRoute from "./routes/notificationRoute.js";
-import regulationRoute from "./routes/regulationRoute.js";
-import reviewRoute from "./routes/reviewRoute.js";
-import paymentRoute from "./routes/paymentRoute.js";
-import orderRoute from "./routes/orderRoute.js";
-import orderDetailRoute from "./routes/orderDetailRoutes.js";
-import cartRoute from "./routes/cartRoute.js";
+import userRoute from "./User/routes/userRoute.js";
+import authRoute from "./User/routes/authRoute.js";
+import productRoute from "./User/routes/productRoute.js";
+import categoryRoute from "./User/routes/categoryRoute.js";
+import feedbackRoute from "./User/routes/feedbackRoute.js";
+import notificationRoute from "./User/routes/notificationRoute.js";
+import regulationRoute from "./User/routes/regulationRoute.js";
+import reviewRoute from "./User/routes/reviewRoute.js";
+import paymentRoute from "./User/routes/paymentRoute.js";
+import orderRoute from "./User/routes/orderRoute.js";
+import orderDetailRoute from "./User/routes/orderDetailRoutes.js";
+import cartRoute from "./User/routes/cartRoute.js";
 import mongoose from "mongoose";
 import cors from "cors";
 import adminRouter from "./Admin/routes/Adminroute.js";
-import paymentRoutes from "./routes/payment.js";
-import mailRoute from "./routes/mailRoute.js";
+import paymentRoutes from "./User/routes/payment.js";
+import mailRoute from "./User/routes/mailRoute.js";
 
 const app = express();
 

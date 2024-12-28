@@ -1,6 +1,6 @@
-import Users from "../../../models/Users.js";
-import Reviews from "../../../models/Reviews.js";
-import Products from "../../../models/Products.js";
+import Users from "../../../User/models/Users.js";
+import Reviews from "../../../User/models/Reviews.js";
+import Products from "../../../User/models/Products.js";
 
 export const getAllReviews = async () => {
   try {
