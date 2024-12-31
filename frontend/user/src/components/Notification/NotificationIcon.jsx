@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FiBell } from 'react-icons/fi';
 import NotificationPopup from './NotificationPopup.jsx'; // Đường dẫn đến NotificationPopup
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5555'); // Đảm bảo cổng đúng
 
 const NotificationIcon = ({ userId }) => {
     const userInfoString = sessionStorage.getItem('userInfo');
@@ -17,19 +20,14 @@ const NotificationIcon = ({ userId }) => {
     useEffect(() => {
         if (userId) {
             fetchNotifications(userId);
-
-            // Đặt interval để load lại thông báo mỗi giây
-            const intervalId = setInterval(() => {
+            socket.on('receiveNotification', () => {
                 fetchNotifications(userId);
-            }, 1000);
-
-            // Dọn dẹp interval khi component unmount
-            return () => clearInterval(intervalId);
+            });
         } else {
             setNotifications([]);
             setUnreadCount(0);
         }
-    }, []);
+    }, [userId]);
 
     const fetchNotifications = async (userId) => {
         try {

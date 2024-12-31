@@ -5,6 +5,9 @@ import BackButton from '../../commons/BackButton';
 import { getProductById } from '../../hooks/Products';
 import { updateStatusOrder } from '../../hooks/Orders';
 import { createNotification } from '../../hooks/Notifications';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5555'); // Đảm bảo cổng đúng
 
 const SalesOrder = () => {
     const { orderId } = useParams();
@@ -73,11 +76,12 @@ const SalesOrder = () => {
 
         await updateStatusOrder(orderId, status_order);
         if (order.user_id_buyer) {
-            await createNotification({
+            const notification = await createNotification({
                 user_id_created: userInfo._id,
                 user_id_receive: order.user_id_buyer,
                 message: `Đơn hàng ${product.name} của bạn đã bị huỷ do: ${cancelText}.`
             });
+            socket.emit('sendNotification'); // Gửi thông báo qua WebSocket
         }
         navigate(`/order/${orderId}`);
     };
@@ -88,11 +92,12 @@ const SalesOrder = () => {
 
         if (order.status_order === 'Pending') {
             if (order.user_id_buyer) {
-                await createNotification({
+                const notification = await createNotification({
                     user_id_created: userInfo._id,
                     user_id_receive: order.user_id_buyer,
                     message: `Đơn hàng ${product.name} của bạn đã được xác nhận thành công.`
                 });
+                socket.emit('sendNotification'); // Gửi thông báo qua WebSocket
             }
             status_order = 'Confirmed';
         } else if (order.status_order === 'Confirmed') {
@@ -101,20 +106,22 @@ const SalesOrder = () => {
             status_order = 'Shipping';
         } else if (order.status_order === 'Request Cancel') {
             if (order.user_id_buyer) {
-                await createNotification({
+                const notification = await createNotification({
                     user_id_created: userInfo._id,
                     user_id_receive: order.user_id_buyer,
                     message: `Đơn hàng ${product.name} của bạn đã được xác nhận huỷ thành công.`
                 });
+                socket.emit('sendNotification'); // Gửi thông báo qua WebSocket
             }
             status_order = 'Cancelled';
         } else if (order.status_order === 'Shipping') {
             if (order.user_id_buyer) {
-                await createNotification({
+                const notification = await createNotification({
                     user_id_created: userInfo._id,
                     user_id_receive: order.user_id_buyer,
                     message: `Đơn hàng ${product.name} của bạn đã được giao thành công.`
                 });
+                socket.emit('sendNotification'); // Gửi thông báo qua WebSocket
             }
             status_order = 'Success';
         }

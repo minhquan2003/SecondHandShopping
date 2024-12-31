@@ -1,11 +1,15 @@
 import React from 'react';
 import { updateNotification } from '../../hooks/Notifications';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5555');
 
 const NotificationPopup = ({ notifications, onClose }) => {
 
     const handleRead = async (id) => { 
         const readed = true;
         await updateNotification(id, readed);
+        socket.emit('sendNotification');
     };
 
     const formatDate = (dateString) => {

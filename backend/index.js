@@ -18,17 +18,25 @@ import adminRouter from "./Admin/routes/Adminroute.js";
 import paymentRoutes from "./User/routes/payment.js";
 import mailRoute from "./User/routes/mailRoute.js";
 
+import http from "http"; 
+import { Server } from "socket.io";
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  },
+});
 
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:5174"], // Frontend URL
+  origin: ["http://localhost:5173", "http://localhost:5174"],
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
 
 app.use(express.json());
-
-app.use(cors());
 
 app.use("/auth", authRoute);
 app.use("/users", userRoute);
@@ -45,19 +53,32 @@ app.use("/carts", cartRoute);
 app.use("/payment", paymentRoutes);
 app.use("/mail", mailRoute);
 
-//Admin
+// Admin
 app.use("/admin", adminRouter);
+
+
+// Socket.IO
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  socket.on("sendNotification", () => {
+    socket.broadcast.emit("receiveNotification");
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
 
 mongoose
   .connect(mongodbconn)
   .then((conn) => {
     console.log("App connected to database");
     console.log(`MongoDB Connected: ${conn.connection.host}`);
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
     });
   })
   .catch((error) => {
     console.error("Database connection error:", error);
   });
-  

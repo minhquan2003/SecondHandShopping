@@ -7,6 +7,9 @@ import { createOrderDetail } from '../../hooks/Orderdetails';
 import { updateProduct } from '../../hooks/Products';
 import {removeFromCart} from '../../hooks/Carts';
 import { createNotification } from '../../hooks/Notifications';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5555');
 
 const Checkout = () => {
     const userInfoString = sessionStorage.getItem('userInfo');
@@ -119,6 +122,7 @@ const Checkout = () => {
                     user_id_receive: userInfo._id,
                     message: `Bạn đã đặt thành công đơn hàng ${item.product_name}: ${order.data.total_amount} VNĐ.`
                 })
+                socket.emit('sendNotification');
             }
 
             const aa = await createNotification({
@@ -126,6 +130,7 @@ const Checkout = () => {
                 user_id_receive: item.user_seller,
                 message: `Có đơn hàng ${item.product_name} của ${order.data.name} số điện thoại ${order.data.phone} đang chờ bạn xác nhận.`
             })
+            socket.emit('sendNotification');
            
             const idCart = item._id;
             if (!location.state?.product) {

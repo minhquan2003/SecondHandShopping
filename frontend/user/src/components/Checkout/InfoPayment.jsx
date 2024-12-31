@@ -3,6 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useUserById } from '../../hooks/Users';
 import { createNotification } from '../../hooks/Notifications';
 import { createPayment } from '../../hooks/Payment'; 
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5555');
 
 const PaymentInfo = () => {
     const location = useLocation();
@@ -25,6 +28,7 @@ const PaymentInfo = () => {
             user_id_receive: seller,
             message: `Có đơn hàng của ${name} với số điện thoại là ${phone} đã thanh toán số tiền ${total_amount} cho bạn.`
         });
+        socket.emit('sendNotification');
 
         await createPayment({
             type: "Pay Online",

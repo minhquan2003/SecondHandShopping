@@ -6,6 +6,9 @@ import { getProductById } from '../../hooks/Products';
 import { addReview } from '../../hooks/Review';
 import { updateStatusOrder } from '../../hooks/Orders';
 import { createNotification } from '../../hooks/Notifications';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5555');
 
 const PurchaseOrder = () => {
     const { orderId } = useParams(); // Lấy mã đơn hàng từ URL
@@ -59,6 +62,7 @@ const PurchaseOrder = () => {
                 user_id_receive: seller._id,
                 message: `Đơn hàng ${product.name} của ${userInfo.name} đã muốn huỷ do: ${cancelText}.`
             });
+            socket.emit('sendNotification');
             
             navigate(`/order/${order._id}`);
         } catch (error) {

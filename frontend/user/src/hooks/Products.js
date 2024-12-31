@@ -60,7 +60,6 @@ const getProductsNotApproveByIdSeller = (idSeller) => {
                 const response = await axios.get(`http://localhost:5555/products/notapprove/user/${idSeller}`);
                 setProducts(response.data);
             } catch (err) {
-                console.error("Error fetching products:", err);
                 setError("Không có sản phẩm nào.");
             } finally {
                 setLoading(false);
@@ -84,7 +83,6 @@ const getProductsSoldOutByIdSeller = (idSeller) => {
                 const response = await axios.get(`http://localhost:5555/products/soldout/user/${idSeller}`);
                 setProducts(response.data);
             } catch (err) {
-                console.error("Error fetching products:", err);
                 setError("Không có sản phẩm nào.");
             } finally {
                 setLoading(false);
