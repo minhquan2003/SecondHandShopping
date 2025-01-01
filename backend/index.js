@@ -17,6 +17,7 @@ import cors from "cors";
 import adminRouter from "./Admin/routes/Adminroute.js";
 import paymentRoutes from "./User/routes/payment.js";
 import mailRoute from "./User/routes/mailRoute.js";
+import messageRouter from './User/routes/messageRoutes.js';
 
 import http from "http"; 
 import { Server } from "socket.io";
@@ -52,6 +53,7 @@ app.use("/orderDetails", orderDetailRoute);
 app.use("/carts", cartRoute);
 app.use("/payment", paymentRoutes);
 app.use("/mail", mailRoute);
+app.use("/messages", messageRouter);
 
 // Admin
 app.use("/admin", adminRouter);
@@ -64,6 +66,15 @@ io.on("connection", (socket) => {
   socket.on("sendNotification", () => {
     socket.broadcast.emit("receiveNotification");
   });
+
+  socket.on("sendMessage", (messageData) => {
+    // Phát lại tin nhắn cho người nhận
+    socket.to(messageData.receiverId).emit("newMessage", messageData);
+  });
+
+  socket.on("addCart", ()=>{
+    socket.broadcast.emit("addToCart");
+  })
 
   socket.on("disconnect", () => {
     console.log("User disconnected");

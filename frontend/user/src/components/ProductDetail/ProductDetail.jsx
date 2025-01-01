@@ -7,6 +7,9 @@ import { useReviews } from '../../hooks/Review'; // Import custom hook cho revie
 import { FaCheckCircle } from 'react-icons/fa';
 import { getCartItemsByUserId } from '../../hooks/Carts';
 import { useUserById } from '../../hooks/Users';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5555');
 
 const ProductDisplay = () => {
     const userInfoString = sessionStorage.getItem('userInfo');
@@ -46,7 +49,7 @@ const ProductDisplay = () => {
                     product_imageUrl: product.image_url,
                 });
                 alert("Sản phẩm đã được thêm vào giỏ hàng!");
-                navigate(0)
+                socket.emit('addCart');
             }
         } else {
             alert("Bạn chưa đăng nhập!");

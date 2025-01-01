@@ -16,6 +16,9 @@ import { useNavigate } from 'react-router-dom';
 import NotificationIcon from "../../../Notification/NotificationIcon.jsx";
 import { getCartItemsByUserId } from "../../../../hooks/Carts.js";
 import logo from '../../../../assets/img/logo.png'
+import io from 'socket.io-client'
+
+const socket = io("http://localhost:5555")
 
 const Header = () => {
   const userInfoString = sessionStorage.getItem('userInfo');
@@ -33,6 +36,9 @@ const Header = () => {
   useEffect(() => {
     if (userInfo) {
       fetchCartItems(userInfo._id);
+      socket.on('addToCart', () => {
+        fetchCartItems(userInfo._id);
+    });
     }
   },);
 

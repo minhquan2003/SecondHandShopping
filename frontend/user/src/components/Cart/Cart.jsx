@@ -3,6 +3,9 @@ import { getCartItemsByUserId, removeFromCart} from '../../hooks/Carts';
 import {useNavigate } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
 import BackButton from '../../commons/BackButton';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5555');
 
 const Cart = () => {
     const userInfoString = sessionStorage.getItem('userInfo');
@@ -31,6 +34,7 @@ const Cart = () => {
 
     const handleRemoveFromCart = (id) => {
         removeFromCart(id);
+        socket.emit('addCart');
     };
 
     const totalAmount = cartItems
