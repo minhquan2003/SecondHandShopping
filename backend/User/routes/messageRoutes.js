@@ -1,12 +1,12 @@
 import express from 'express';
-import { sendMessageCon, getMessages } from '../controllers/messageController.js';
+import { sendMessage, getMessagesByConversation } from '../controllers/messageController.js';
 
 const messageRouter = express.Router();
 
-// Route gửi tin nhắn
-messageRouter.post('/send', sendMessageCon);
+// Gửi tin nhắn
+messageRouter.post('/', sendMessage);
 
-// Route nhận tất cả tin nhắn giữa hai người dùng
-messageRouter.get('/:userId1/:userId2', getMessages);
+// Lấy tin nhắn theo cuộc hội thoại
+messageRouter.get('/:conversationId', getMessagesByConversation);
 
 export default messageRouter;

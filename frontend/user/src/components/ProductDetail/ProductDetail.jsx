@@ -8,6 +8,8 @@ import { FaCheckCircle } from 'react-icons/fa';
 import { getCartItemsByUserId } from '../../hooks/Carts';
 import { useUserById } from '../../hooks/Users';
 import io from 'socket.io-client';
+import axios from 'axios';
+import { addConversation, addMessage } from '../../hooks/Message';
 
 const socket = io('http://localhost:5555');
 
@@ -53,6 +55,34 @@ const ProductDisplay = () => {
             }
         } else {
             alert("Bạn chưa đăng nhập!");
+        }
+    };
+
+    const handleTextToSeller = async () => {
+        // Kiểm tra xem người dùng có phải là người bán không
+        if (product.user_id === userInfo._id) {
+            alert("Đây là sản phẩm của bạn!");
+            return;
+        }
+    
+        // Lấy danh sách các cuộc hội thoại
+        const response = await axios.get(`http://localhost:5555/conversations/${userInfo._id}`);
+        const conversations = response.data;
+    
+        // Kiểm tra xem đã có cuộc hội thoại nào giữa userInfo._id và product.user_id chưa
+        const existingConversation = conversations.find(conversation => 
+            (conversation.participant1 === userInfo._id && conversation.participant2 === product.user_id) ||
+            (conversation.participant1 === product.user_id && conversation.participant2 === userInfo._id)
+        );
+    
+        if (existingConversation) {
+            // Nếu có cuộc hội thoại, chuyển đến trang nhắn tin
+            navigate(`/message/${userInfo._id}/${existingConversation._id}`);
+        } else {
+            // Nếu không, tạo cuộc hội thoại mới
+            const newConversation = await addConversation(userInfo._id, product.user_id);
+            // Chuyển đến trang nhắn tin với cuộc hội thoại mới
+            navigate(`/message/${userInfo._id}/${newConversation._id}`);
         }
     };
 
@@ -139,6 +169,12 @@ const ProductDisplay = () => {
                                     Đặt hàng
                                 </button>
                             </div>
+                            <button 
+                                onClick={handleTextToSeller} 
+                                className="bg-gray-100 text-green-600 font-bold rounded p-2 hover:bg-gray-300 transition duration-300"
+                            >
+                                Nhắn với người bán
+                            </button>
                         </div>
                     </>
                 )}

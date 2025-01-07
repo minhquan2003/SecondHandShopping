@@ -22,6 +22,8 @@ import Feedback from "./components/Feedback/Feedback";
 import ReGetPassword from "./components/AuthForm/LossPassword";
 import ChangePassword from "./components/AuthForm/ChangePassword";
 import Regulation from "./components/Regulation/Regulation";
+import Message from "./components/Message/Message";
+import Chat from "./components/Message/Chat";
 
 const App = () => {
   const userInfoString = sessionStorage.getItem('userInfo');
@@ -52,6 +54,8 @@ const App = () => {
           <Route path="/regetpassword" element={<ReGetPassword />} />
           <Route path="/changepassword" element={ userInfo ? <ChangePassword /> : <Navigate to="/" replace />} />
           <Route path="/regulations" element={<Regulation />} />
+          <Route path="/message/:userId" element={ userInfo ? <Message /> : <Navigate to="/" replace />} />
+          <Route path="/message/:userId/:conversationId" element={userInfo ? <Message /> : <Navigate to="/" replace />} />
         </Routes>
       </MainLayout>
     </Router>

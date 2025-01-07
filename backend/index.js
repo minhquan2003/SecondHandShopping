@@ -18,6 +18,7 @@ import adminRouter from "./Admin/routes/Adminroute.js";
 import paymentRoutes from "./User/routes/payment.js";
 import mailRoute from "./User/routes/mailRoute.js";
 import messageRouter from './User/routes/messageRoutes.js';
+import conversationRouter from "./User/routes/conversationRoutes.js";
 
 import http from "http"; 
 import { Server } from "socket.io";
@@ -53,6 +54,7 @@ app.use("/orderDetails", orderDetailRoute);
 app.use("/carts", cartRoute);
 app.use("/payment", paymentRoutes);
 app.use("/mail", mailRoute);
+app.use("/conversations", conversationRouter)
 app.use("/messages", messageRouter);
 
 // Admin
@@ -61,15 +63,15 @@ app.use("/admin", adminRouter);
 
 // Socket.IO
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  console.log(`A user connected: ${socket.id}`);
 
   socket.on("sendNotification", () => {
     socket.broadcast.emit("receiveNotification");
   });
 
-  socket.on("sendMessage", (messageData) => {
-    // Phát lại tin nhắn cho người nhận
-    socket.to(messageData.receiverId).emit("newMessage", messageData);
+  socket.on("sendMessage", () => {
+    socket.emit("newMessage");
+    socket.broadcast.emit("newMessage");
   });
 
   socket.on("addCart", ()=>{

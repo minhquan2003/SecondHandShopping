@@ -137,6 +137,9 @@ const Header = () => {
           <span className="cursor-pointer" title="Thông báo">
             <NotificationIcon userId={id} />
           </span>
+          <span className="relative cursor-pointer" onClick={() => navigate(`/message/${userInfo._id}`)} title="Trò chuyện">
+            <FiMessageCircle className="h-5 w-5" />
+          </span>
           <span className="relative cursor-pointer" onClick={() => navigate('/cart')} title="Giỏ hàng">
             <FiShoppingCart className="h-5 w-5" />
             {userInfo && cartItemCount > 0 && (
