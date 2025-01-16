@@ -19,7 +19,7 @@ const messageSchema = new mongoose.Schema({
     },
     statusMessage: {
         type: String,
-        enum: ['sent', 'delivered', 'read'], // Trạng thái tin nhắn
+        enum: ['sent', 'read'], // Trạng thái tin nhắn
         default: 'sent',
     },
 }, {

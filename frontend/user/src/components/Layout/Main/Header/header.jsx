@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from "react";
 import nonAvata from '../../../../assets/img/nonAvata.jpg';
 import {
-  FiMenu,
   FiSearch,
-  FiBell,
-  FiMessageCircle,
   FiShoppingCart,
   FiShoppingBag,
-  FiUser,
   FiMail,
-  FiLogIn
 } from "react-icons/fi";
-import { IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import NotificationIcon from "../../../Notification/NotificationIcon.jsx";
 import { getCartItemsByUserId } from "../../../../hooks/Carts.js";
 import logo from '../../../../assets/img/logo.png'
 import io from 'socket.io-client'
+import MessageIcon from "../../../Message/MessageIcon.jsx";
 
 const socket = io("http://localhost:5555")
 
@@ -36,6 +31,7 @@ const Header = () => {
   useEffect(() => {
     if (userInfo) {
       fetchCartItems(userInfo._id);
+      socket.emit("sendMessage");
       socket.on('addToCart', () => {
         fetchCartItems(userInfo._id);
     });
@@ -137,8 +133,8 @@ const Header = () => {
           <span className="cursor-pointer" title="Thông báo">
             <NotificationIcon userId={id} />
           </span>
-          <span className="relative cursor-pointer" onClick={() => navigate(`/message/${userInfo._id}`)} title="Trò chuyện">
-            <FiMessageCircle className="h-5 w-5" />
+          <span className="cursor-pointer" title="Trò chuyện">
+            <MessageIcon/>
           </span>
           <span className="relative cursor-pointer" onClick={() => navigate('/cart')} title="Giỏ hàng">
             <FiShoppingCart className="h-5 w-5" />

@@ -10,43 +10,48 @@ const Chat = ({ conversation, user }) => {
     const { userId } = useParams();
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState('');
-
+    
     useEffect(() => {
         fetchMessages();
-        // Lắng nghe sự kiện "newMessage"
-        socket.on("newMessage", fetchMessages); // Không gọi hàm ngay lập tức
-    
-        // Cleanup khi component unmount
+        socket.on("newMessage", fetchMessages);
         return () => {
-            socket.off("newMessage", fetchMessages); // Cleanup đúng cách
+            socket.off("newMessage", fetchMessages);
         };
     }, [conversation, userId]);
 
     const fetchMessages = async () => {
         if (conversation) {
-            const response = await axios.get(`http://localhost:5555/messages/${conversation._id}`);
-            setMessages(response.data);
+            try {
+                const response = await axios.get(`http://localhost:5555/messages/${conversation._id}`);
+                setMessages(response.data);
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            }
         }
     };
 
     const handleSend = async () => {
-        const conversationId = conversation._id;
-        const content = text;
-        let senderId, receiverId;
+        if (text.trim()) {
+            const conversationId = conversation._id;
+            const content = text;
+            let senderId, receiverId;
 
-        if (conversation.participant1 === userId) {
-            senderId = conversation.participant1;
-            receiverId = conversation.participant2;
-        } else {
-            senderId = conversation.participant2;
-            receiverId = conversation.participant1;
+            if (conversation.participant1 === userId) {
+                senderId = conversation.participant1;
+                receiverId = conversation.participant2;
+            } else {
+                senderId = conversation.participant2;
+                receiverId = conversation.participant1;
+            }
+
+            await addMessage(conversationId, content, senderId, receiverId);
+            socket.emit("sendMessage", { conversationId, content, senderId, receiverId });
+            setText('');
+            const userSend = conversation.participant1 === userId ? conversation.participant2 : conversation.participant1;
+            senderId = userSend;
+            const id = conversation._id
+            const aa = await axios.post(`http://localhost:5555/messages/read/${id}`, {senderId});
         }
-
-        await addMessage(conversationId, content, senderId, receiverId);
-        
-        // Gửi tin nhắn qua socket
-        socket.emit("sendMessage");
-        setText(''); // Xóa nội dung sau khi gửi
     };
 
     return (

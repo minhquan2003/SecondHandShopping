@@ -57,7 +57,7 @@ const Cart = () => {
             {cartItems && cartItems.length > 0 ? (
                 <ul className="divide-y divide-gray-300">
                     {cartItems.map(item => (
-                        <li key={item.id} className="flex items-center justify-between py-2">
+                        <li key={item._id} className="flex items-center justify-between py-2">
                             <div className="flex items-center">
                                 {/* <input 
                                     type="checkbox" 

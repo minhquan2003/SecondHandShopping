@@ -56,4 +56,16 @@ const getMessagesByParticipants = async (participants) => {
     }).sort({ createdAt: 1 }); // Sắp xếp theo thời gian
 };
 
-export { sendMessage, getMessagesByUser, getConversations, getMessagesByParticipants };
+const readMessageByConversationId = async (converId, sender) => {
+    try {
+        const result = await Messages.updateMany(
+            { conversationId: converId, statusMessage: 'sent', senderId: sender },
+            { $set: { statusMessage: 'read' } }
+        );
+        return result;
+    } catch (error) {
+        throw new Error('Error updating messages: ' + error.message);
+    }
+};
+
+export { sendMessage, getMessagesByUser, getConversations, getMessagesByParticipants, readMessageByConversationId };

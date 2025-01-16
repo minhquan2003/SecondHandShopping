@@ -21,11 +21,45 @@ const ListMessage = ({ userId }) => {
         });
     };
 
+    const unReadMess = async (idConver, user) => {
+        const response = await axios.get(`http://localhost:5555/messages/${idConver}`);
+        const messages = response.data; // Lấy dữ liệu tin nhắn
+
+        // Sử dụng reduce để đếm số tin nhắn có trạng thái 'sent'
+        const count = messages.reduce((acc, mess) => {
+            return (mess.statusMessage === 'sent' && mess.senderId != user) ? acc + 1 : acc; // Tăng biến acc nếu trạng thái là 'sent'
+        }, 0); // Khởi tạo acc với giá trị 0
+
+        return count;
+    };
+
     useEffect(() => {
-        const fetchConversations = async () => {
+        fetchConversations();
+        const handleNewMessage = () => {
+            fetchConversations();
+        };
+        socket.on("newMessage", handleNewMessage);
+    
+        // Gỡ bỏ sự kiện khi component bị hủy
+        return () => {
+            socket.off("newMessage", handleNewMessage);
+        };
+    }, [userId]);
+
+    const fetchConversations = async () => {
             try {
                 const response = await axios.get(`http://localhost:5555/conversations/${userId}`);
-                setConversations(response.data);
+                
+
+                const conversa = await Promise.all(response.data.map(async (conversation) => {
+                    const unRead = await unReadMess(conversation._id, userId); // Gọi hàm bất đồng bộ để lấy số tin nhắn chưa đọc
+                    return {
+                        ...conversation, // Giữ lại tất cả các trường dữ liệu gốc
+                        unRead // Thêm trường unRead vào đối tượng
+                    };
+                }));
+
+                setConversations(conversa);
 
                 // Lấy thông tin người dùng cho từng cuộc hội thoại
                 const participantIds = response.data.map(conversation => 
@@ -44,11 +78,11 @@ const ListMessage = ({ userId }) => {
             }
         };
 
-        fetchConversations();
-        socket.on("newMessage", fetchConversations());
-    }, [userId]);
-
-    const handleSelectConversation = (conversation) => {
+    const handleSelectConversation = async (conversation) => {
+        const userSend = conversation.participant1 === userId ? conversation.participant2 : conversation.participant1;
+        const senderId = userSend;
+        const id = conversation._id
+        const aa = await axios.post(`http://localhost:5555/messages/read/${id}`, {senderId});
         // Chuyển hướng đến đường dẫn mới với mã cuộc trò chuyện
         navigate(`/message/${userId}/${conversation._id}`);
     };
@@ -68,6 +102,7 @@ const ListMessage = ({ userId }) => {
                         style={{ cursor: 'pointer', marginBottom: '10px', padding: '10px', border: '1px solid #eee', borderRadius: '5px' }}
                     >
                         <p>{user ? user.name : participantId}</p>
+                        <p>Tin nhắn chưa đọc: {conversation.unRead}</p>
                         <span>
                             <p>{conversation.lastMessage || 'Không có tin nhắn'}</p>
                             <p>{conversation.lastMessageTimestamp ? formatDate(conversation.lastMessageTimestamp) : 'Chưa có tin nhắn'}</p>

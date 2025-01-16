@@ -15,15 +15,25 @@ const Message = () => {
     useEffect(() => {
         if (conversationId) { // Nếu có conversationId thì fetch thông tin cuộc hội thoại
             const fetchConversation = async () => {
-                const response = await axios.get(`http://localhost:5555/conversations/byId/${conversationId}`);
-                setSelectedConversation(response.data);
-                // Gọi API để lấy thông tin người dùng
-                const userResponse = await axios.get(`http://localhost:5555/users/${response.data.participant1 === userId ? response.data.participant2 : response.data.participant1}`);
-                setSelectedUser(userResponse.data); // Cập nhật thông tin người dùng
+                try {
+                    const response = await axios.get(`http://localhost:5555/conversations/byId/${conversationId}`);
+                    setSelectedConversation(response.data);
+                    
+                    // Gọi API để lấy thông tin người dùng
+                    const userResponse = await axios.get(`http://localhost:5555/users/${response.data.participant1 === userId ? response.data.participant2 : response.data.participant1}`);
+                    setSelectedUser(userResponse.data); // Cập nhật thông tin người dùng
+                } catch (error) {
+                    console.error('Error fetching conversation or user:', error);
+                }
             };
 
             fetchConversation();
-            socket.on("newMessage", fetchConversation());
+            socket.on("newMessage", fetchConversation); // Thêm listener cho tin nhắn mới
+
+            // Cleanup listener khi component bị hủy
+            return () => {
+                socket.off("newMessage", fetchConversation);
+            };
         }
     }, [conversationId, userId]);
 

@@ -1,5 +1,6 @@
 import Conversations from '../models/Conversations.js';
 import Messages from '../models/Messages.js';
+import { readMessageByConversationId } from '../services/messageService.js';
 
 // Gửi tin nhắn
 const sendMessage = async (req, res) => {
@@ -39,4 +40,15 @@ const getMessagesByConversation = async (req, res) => {
     }
 };
 
-export { sendMessage, getMessagesByConversation };
+const markMessagesAsRead = async (req, res) => {
+    const conversationId = req.params.conversationId;
+    const {senderId} = req.body;
+    try {
+        const result = await readMessageByConversationId(conversationId, senderId);
+        res.status(200).json({ message: 'Messages updated successfully', result });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export { sendMessage, getMessagesByConversation, markMessagesAsRead };
